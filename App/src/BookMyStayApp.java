@@ -1,113 +1,38 @@
-import java.util.*;
+class BookingHistory {
+    private String reservationId;
+    private String customerName;
+    private String roomType;
+    private String bookingDate;
+    private String status;
 
-// -------------------- Use Case 6 --------------------
-class RoomAllocationService {
-    private Set<String> assignedRooms = new HashSet<>();
-    private Map<String, String> roomTypeMap = new HashMap<>();
-
-    public void allocateRoom(String roomType) {
-        String roomID = generateUniqueRoomID(roomType);
-
-        if (!assignedRooms.contains(roomID)) {
-            assignedRooms.add(roomID);
-            roomTypeMap.put(roomType, roomID);
-            System.out.println("Room allocated for " + roomType + ": " + roomID);
-        } else {
-            System.out.println("Duplicate room ID detected for " + roomType);
-        }
+    public BookingHistory(String reservationId, String customerName, String roomType, String bookingDate, String status) {
+        this.reservationId = reservationId;
+        this.customerName = customerName;
+        this.roomType = roomType;
+        this.bookingDate = bookingDate;
+        this.status = status;
     }
 
-    private String generateUniqueRoomID(String roomType) {
-        return roomType + "_" + UUID.randomUUID().toString().substring(0, 8);
-    }
-
-    public Map<String, String> getAllocations() {
-        return roomTypeMap;
+    public void displayHistory() {
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Customer Name: " + customerName);
+        System.out.println("Room Type: " + roomType);
+        System.out.println("Booking Date: " + bookingDate);
+        System.out.println("Status: " + status);
     }
 }
 
-// -------------------- Use Case 7 --------------------
-class AddOnService {
-    private String serviceName;
-    private double serviceCost;
-
-    public AddOnService(String name, double cost) {
-        this.serviceName = name;
-        this.serviceCost = cost;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public double getServiceCost() {
-        return serviceCost;
+class BookingReportService {
+    public void generateReport(BookingHistory history) {
+        System.out.println("\n--- Booking Report ---");
+        history.displayHistory();
     }
 }
 
-class SpaService extends AddOnService {
-    private int duration;
-
-    public SpaService(String name, double cost, int duration) {
-        super(name, cost);
-        this.duration = duration;
-    }
-
-    public void bookSpaService() {
-        System.out.println("Spa service booked for " + duration + " minutes.");
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-}
-
-class Reservation {
-    private String reservationID;
-    private List<AddOnService> selectedServices;
-    private double totalCost;
-
-    public Reservation(String id, double baseCost) {
-        this.reservationID = id;
-        this.totalCost = baseCost;
-        selectedServices = new ArrayList<>();
-    }
-
-    public void addService(AddOnService service) {
-        selectedServices.add(service);
-        totalCost += service.getServiceCost();
-    }
-
-    public void displayReservationDetails() {
-        System.out.println("Reservation ID: " + reservationID);
-        System.out.println("Total Cost: $" + totalCost);
-        System.out.println("Selected Services:");
-        for (AddOnService service : selectedServices) {
-            System.out.println("- " + service.getServiceName());
-        }
-    }
-}
-
-// -------------------- Main Class --------------------
-public class BookMyStayApp {
+public class BookMyStayApp_UseCase8 {
     public static void main(String[] args) {
-        // Use Case 6: Room Allocation
-        RoomAllocationService roomService = new RoomAllocationService();
-        roomService.allocateRoom("Deluxe");
-        roomService.allocateRoom("Suite");
-        roomService.allocateRoom("Single");
-
-        System.out.println("Final Room Allocations: " + roomService.getAllocations());
-
-        // Use Case 7: Add-On Service Selection
-        Reservation reservation = new Reservation("R001", 200.0);
-
-        AddOnService spa = new SpaService("Spa Treatment", 50.0, 60);
-        AddOnService breakfast = new AddOnService("Breakfast Buffet", 20.0);
-
-        reservation.addService(spa);
-        reservation.addService(breakfast);
-
-        reservation.displayReservationDetails();
+        BookingHistory history = new BookingHistory("B001", "Alice", "Deluxe Suite", "2024-02-15", "Confirmed");
+        BookingReportService reportService = new BookingReportService();
+        reportService.generateReport(history);
     }
 }

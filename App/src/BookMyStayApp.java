@@ -1,41 +1,74 @@
-import java.util.Scanner;
+import java.util.*;
 
-// Custom exception for invalid booking input
-class InvalidBookingException extends Exception {
-    public InvalidBookingException(String message) {
-        super(message);
+// Payment class to handle transactions
+class Payment {
+    private String paymentId;
+    private double amount;
+    private String method;
+    private String status;
+
+    public Payment(String paymentId, double amount, String method) {
+        this.paymentId = paymentId;
+        this.amount = amount;
+        this.method = method;
+        this.status = "Pending";
+    }
+
+    public void processPayment() {
+        // Simulate payment success
+        this.status = "Completed";
+        System.out.println("Payment ID: " + paymentId + " processed successfully via " + method);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getMethod() {
+        return method;
     }
 }
 
-// Validator class for booking input
-class BookingValidator {
-    public static void validateRoom(String roomNumber) throws InvalidBookingException {
-        if (roomNumber == null || roomNumber.trim().isEmpty()) {
-            throw new InvalidBookingException("Room number cannot be empty.");
-        }
+// Invoice class to generate booking invoices
+class Invoice {
+    private String invoiceId;
+    private String reservationId;
+    private double totalAmount;
+    private Date issueDate;
 
-        // Room number must start with a letter followed by two digits (e.g., A01, B12)
-        if (!roomNumber.matches("^[A-Z]{1}[0-9]{2}$")) {
-            throw new InvalidBookingException("Invalid Room Number format. Expected format: A01, B12, etc.");
-        }
+    public Invoice(String invoiceId, String reservationId, double totalAmount) {
+        this.invoiceId = invoiceId;
+        this.reservationId = reservationId;
+        this.totalAmount = totalAmount;
+        this.issueDate = new Date();
+    }
 
-        System.out.println("Room " + roomNumber + " is valid and booking can proceed.");
+    public void displayInvoice() {
+        System.out.println("\n--- Invoice ---");
+        System.out.println("Invoice ID: " + invoiceId);
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Total Amount: $" + totalAmount);
+        System.out.println("Issue Date: " + issueDate);
     }
 }
 
-// Main class for Use Case 9
+// Main class for Use Case 10
 public class BookMyStayApp {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Room Number to Validate: ");
-        String roomNumber = scanner.nextLine();
+        // Simulate a reservation payment
+        Payment payment = new Payment("P001", 270.0, "Credit Card");
+        payment.processPayment();
 
-        try {
-            BookingValidator.validateRoom(roomNumber);
-        } catch (InvalidBookingException e) {
-            System.out.println("Booking Failed: " + e.getMessage());
+        // Generate invoice if payment successful
+        if (payment.getStatus().equals("Completed")) {
+            Invoice invoice = new Invoice("INV001", "R001", payment.getAmount());
+            invoice.displayInvoice();
+        } else {
+            System.out.println("Payment failed. Invoice not generated.");
         }
-
-        scanner.close();
     }
 }

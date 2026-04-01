@@ -1,38 +1,41 @@
-class BookingHistory {
-    private String reservationId;
-    private String customerName;
-    private String roomType;
-    private String bookingDate;
-    private String status;
+import java.util.Scanner;
 
-    public BookingHistory(String reservationId, String customerName, String roomType, String bookingDate, String status) {
-        this.reservationId = reservationId;
-        this.customerName = customerName;
-        this.roomType = roomType;
-        this.bookingDate = bookingDate;
-        this.status = status;
-    }
-
-    public void displayHistory() {
-        System.out.println("Reservation ID: " + reservationId);
-        System.out.println("Customer Name: " + customerName);
-        System.out.println("Room Type: " + roomType);
-        System.out.println("Booking Date: " + bookingDate);
-        System.out.println("Status: " + status);
+// Custom exception for invalid booking input
+class InvalidBookingException extends Exception {
+    public InvalidBookingException(String message) {
+        super(message);
     }
 }
 
-class BookingReportService {
-    public void generateReport(BookingHistory history) {
-        System.out.println("\n--- Booking Report ---");
-        history.displayHistory();
+// Validator class for booking input
+class BookingValidator {
+    public static void validateRoom(String roomNumber) throws InvalidBookingException {
+        if (roomNumber == null || roomNumber.trim().isEmpty()) {
+            throw new InvalidBookingException("Room number cannot be empty.");
+        }
+
+        // Room number must start with a letter followed by two digits (e.g., A01, B12)
+        if (!roomNumber.matches("^[A-Z]{1}[0-9]{2}$")) {
+            throw new InvalidBookingException("Invalid Room Number format. Expected format: A01, B12, etc.");
+        }
+
+        System.out.println("Room " + roomNumber + " is valid and booking can proceed.");
     }
 }
 
-public class BookMyStayApp_UseCase8 {
+// Main class for Use Case 9
+public class BookMyStayApp {
     public static void main(String[] args) {
-        BookingHistory history = new BookingHistory("B001", "Alice", "Deluxe Suite", "2024-02-15", "Confirmed");
-        BookingReportService reportService = new BookingReportService();
-        reportService.generateReport(history);
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Room Number to Validate: ");
+        String roomNumber = scanner.nextLine();
+
+        try {
+            BookingValidator.validateRoom(roomNumber);
+        } catch (InvalidBookingException e) {
+            System.out.println("Booking Failed: " + e.getMessage());
+        }
+
+        scanner.close();
     }
 }
